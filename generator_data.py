@@ -76,6 +76,28 @@ def writeData(listdata,f):
             f.write(str(x)+",")
         i +=1
 
+#jml jumlah pertemuan setiap mapel
+def createRPP(jml):
+    f_mapel = open("resources/mapel.txt","r")
+    listmapel = f_mapel.readlines()
+    list_rpp = []
+    i = 0
+    for mapel in listmapel:
+        for pertemuan in range(0,jml):
+            dicti = my_dictionary()
+            dicti.add("id_rpp",i+1)
+            dicti.add("username","")
+            dicti.add("pertemuan",pertemuan+1)
+            dicti.add("nama_rpp","RPP "+mapel.rstrip('\n')+" - "+str(pertemuan+1))
+            dicti.add("create_date","")
+            dicti.add("update_date","")
+            dicti.add("created_by","")
+            dicti.add("updated_by","")
+            list_rpp.append(dicti)
+            i += 1
+    f_mapel.close()
+    return list_rpp
+    
 #jml = jumlah kategori yang dibuat(max 7)
 def createKategoriPenilaian(jml):
     f_kategori = open("resources/kategori_penilaian.txt","r")
@@ -140,10 +162,30 @@ def createMapel(jml,kkm):
     f_list_mapel.close()
     return l
 
-def createAccount(atype,max):
-    accountype = atype
-    username= ""
-    katasandi = ""
+def createAccount(atype,jml):
+    accounttype = atype
+    l=[]
+    tgl="2"
+    for x in range(0,jml):
+        if(atype == 3):
+            tgl= randomDate2("1/1/2005", "1/1/2006", random.random())
+        dicty= my_dictionary()
+        dicty.add("username","")
+        dicty.add("password","")
+        dicty.add("id_type",atype)
+        dicty.add("create_date",tgl)
+        dicty.add("update_date",tgl)
+        dicty.add("created_by","")
+        dicty.add("update_by","")
+        l.append(dicty)
+    return l        
+
+def createOrangtua(jml):
+    l=[]
+    l_account = createAccount(2,jml)
+    f_name = open("resources/name.txt","r")
+    listname = f_name.readlines()
+    f_name.close()
     alamat ="J. Bawang"
     tempat = "Bandung"
     kelurahan = "Cicaheum"
@@ -153,59 +195,52 @@ def createAccount(atype,max):
     agama = "Islam"
     jk = ["L","P"]
     gold = ["A","B","AB","O"]
-    nokk = 111111111
-    nik = 111111112
-    if(accountype == 2):
-        nokk += 1000
-        nik += 1000
-    elif(accountype == 3):
-        nokk += 100
-        nik += 100
-    elif(accountype ==4):
-        nokk +=10
-        nik +=10
-    f_name = open("resources/name.txt","r")
-    listname = f_name.readlines()
-    f_name.close()
-    list_account = []
-    i = 0
+    i=0
+    gelar = ["SD","SMP","SMA","D1","D2","D3","D4","S1","S2","S3"]
+    nokk=1232141
+    nik =12312
     for name in listname:
-        dictionary = my_dictionary()
-        if(accountype ==1):
-            tgllahir = randomDate2("1/1/1998", "1/1/1999", random.random())
-        else:
-            tgllahir = randomDate2("1/1/1975", "1/1/1980", random.random())
-        katasandi = tgllahir.split("/")
-        katasandi = "".join(katasandi)
-        nokk +=  10000
-        nik += 10000
-        dictionary.add("account_type",accountype)
-        dictionary.add("kata_sandi",katasandi+"a")
-        dictionary.add("nama",name.rstrip('\n'))
-        dictionary.add("tempat_lahir",tempat)
-        dictionary.add("tanggal_lahir",tgllahir)
-        dictionary.add("alamat",alamat)
-        dictionary.add("kelurahan",kelurahan)
-        dictionary.add("kecamatan",kecamatan)
-        dictionary.add("kabupaten_kota",kota)
-        dictionary.add("provinsi",provinsi)
-        dictionary.add("agama",agama)
-        dictionary.add("jenis_kelamin",jk[int(random.random()*10 % 2)])
-        dictionary.add("golongan_darah",gold[int(random.random()*10 % 4)])
-        dictionary.add("no_kk",nokk)
-        dictionary.add("nik",nik)
-        list_account.append(dictionary)
+        dicty =my_dictionary()
+        tgllahir = randomDate2("1/1/1975", "1/1/1980", random.random())
+        hp = int(random.random()*10000000 % 10000000)
+        username = str(hp)
+        l_account[i].update({"username":username})
+        l_account[i].update({"password":str(tgllahir)+"a"})
+        dicty.add("username",username)
+        dicty.add("nama_ayah",name.rstrip('\n'))
+        dicty.add("tempat_lahir_ayah",tempat)
+        dicty.add("tanggal_lahir_ayah",tgllahir)
+        dicty.add("nama_ibu",name.rstrip('\n'))
+        dicty.add("tempat_lahir_ibu",tempat)
+        dicty.add("tanggal_lahir_ibu",tgllahir)
+        dicty.add("alamat_jalan",alamat)
+        dicty.add("kelurahan",kelurahan)
+        dicty.add("kecamatan",kecamatan)
+        dicty.add("kabupaten_kota",kota)
+        dicty.add("provinsi",provinsi)
+        dicty.add("agama",agama)
+        dicty.add("jenis_kelamin",jk[int(random.random()*10 % 2)])
+        dicty.add("no_kk",nokk)
+        dicty.add("nik",nik)
+        dicty.add("gol_darah",gold[int(random.random()*10 % 4)])
+        dicty.add("image","--")
+        dicty.add("pekerjaan","Wiraswasta")
+        dicty.add("penghasilan",1000000)
+        dicty.add("pendidikan",gelar[int(random.random()*10%10)])
+        l.append(dicty)
         i+=1
-        if(i == max):
+        if i==jml:
             break
-    
-    return list_account
+    createData("account",l_account)
+    return l
 
 def test():
     # mapel=createMapel(2,50)
     # createData("matapelajaran",mapel)
-    account = createAccount(1,100)
-    createData("account",account)
+    # account = createAccount(1,100)
+    # createData("account",account)
+    ortu = createOrangtua(30)
+    createData("ortu",ortu)
 
 def main():
     print("main")
