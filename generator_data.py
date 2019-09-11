@@ -49,7 +49,13 @@ def createTimeSchedule(jamke):
     listTime = ["07:00","07:45","08:30","09:15","10:00","10:45","11:30"]
     time = listTime[jamke-1] + "-" + listTime[jamke]
     return time
-    
+
+#return random list of integer
+def randomNumbers(jml):
+    choices = list(range(jml))
+    random.shuffle(choices)
+    return choices
+
 #jml = jumlah kategori yang dibuat(max 7)
 def createKategoriPenilaian(jml):
     f_kategori = open("resources/kategori_penilaian.txt","r")
@@ -114,9 +120,31 @@ def createRPP(jml):
     f_mapel.close()
     return list_rpp
 
+#jml jumlah siswa
+def createMasukan(jml):
+    f_masukan = open("resources/masukan.txt","r")
+    list_masukan = f_masukan.readlines()
+    f_masukan.close()
+    ln = randomNumbers(len(list_masukan))
+    l = []
+    i = 0
+    for id in range(0,jml):
+        dicti = my_dictionary()
+        dicti.add("id_masukan", id+1)
+        dicti.add("username","")
+        dicti.add("catatan",list_masukan[ln[i]].rstrip('\n'))
+        l.append(dicti)
+        i += 1
+        if i == len(list_masukan):
+            i = 0
+    return l
 
 def test():
-    sikap= createSikap()
-    createData("sikap",sikap)
+    # sikap= createSikap()
+    # createData("sikap",sikap)
+    # rpp = createRPP(3)
+    # createData("RPP",rpp)
+    masukan = createMasukan(10)
+    createData("Masukan",masukan)
 
 test()
